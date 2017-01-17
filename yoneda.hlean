@@ -10,7 +10,7 @@ open pointed eq equiv is_equiv function typeclass cCat closedCat
 
 --set_option pp.all true
 
-definition pTypeC.{u} : ccCat.{u u u} :=
+definition pTypeC.{u} : closedCat.{u u u} :=
   begin
     fapply mk,
     {
@@ -42,7 +42,7 @@ namespace pointed
       { 
         fapply equiv.mk,
         { 
-          apply ccCat.deYonedify pTypeC, 
+          apply closedCat.deYonedify pTypeC, 
           intro X,
           apply to_equiv,
           apply pequiv.symm,
