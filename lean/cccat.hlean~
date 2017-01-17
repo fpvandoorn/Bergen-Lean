@@ -1,0 +1,61 @@
+--Closed concrete infinity-category
+structure ccCat.{u v} extends CC:cCat.{u v} : Type.{(max u v)+1} :=
+  (closed : Π {A B : obj CC} , data (arr A B))
+
+namespace ccCat
+  open function
+  variables {C : ccCat}
+
+  definition hom (A B : obj C) : obj C := obj.mk (arr A B) (closed C)
+
+  definition deYonedify.{u v w} {C : ccCat.{u v}} {A B : obj C} (f : Π X, @cequiv.{u v} C (hom A X) (hom B X)) : B → A := 
+    begin
+      refine @arr.to_fun C _ _ _,
+      apply equiv.to_fun (f A),
+      apply id
+    end
+
+  definition yoneda {A B : obj C} 
+    (e : Π (X : obj C) , @cequiv C (hom A X) (hom B X)) 
+    (enat : Π {X Y} (f : arr X Y) (g : arr A X), f ∘ e X g = e Y (f ∘* g))
+    : 
+    @cequiv C A B :=
+    begin
+      fapply cequiv.mk,
+      {
+        apply deYonedify,
+        intro X,
+        apply cequiv.symm,
+        exact (e X)
+      },
+      {
+        fapply is_equiv.mk,
+        exact deYonedify e,
+        {
+          apply congr_fun,
+          transitivity _,
+          apply enat (cequiv.symm (e B) (id B)) (id A),
+          { 
+            transitivity _,
+            {
+              apply congr_arg _ _ arr.to_fun,
+              apply congr_arg _ _ (e B),
+              apply unitr
+            },
+            {
+              symmetry,
+              refine congr_arg (id B) _ arr.to_fun _,
+              apply to_eq_of_inv_eq (e B),
+              reflexivity
+            }
+          }
+        },
+        {
+        },
+        {
+        }
+      },
+      {
+      }
+    end
+

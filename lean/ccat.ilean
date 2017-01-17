@@ -1,0 +1,101 @@
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.rec|recursor|Π {CC} {A B} {C}, (Π to_fun to_is_equiv wd, C (cequiv.mk to_fun to_is_equiv wd)) → (Π n, C n)
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.data|projection|cCat → Type → Type
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.no_confusion|definition|Π {P} {v1 v2}, v1 = v2 → cCat.no_confusion_type P v1 v2
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.rec_on|definition|Π {C} n, (Π data good idwd invwd compwd coh_unitr, C (mk data good idwd invwd compwd coh_unitr)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.cases_on|definition|Π {CC} {A B} {C} n, (Π to_fun to_is_equiv wd, C (cequiv.mk to_fun to_is_equiv wd)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|22|12|cCat.arr|structure|Π {CC}, obj CC → obj CC → Type
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.compwd|projection|Π c {A B C} g f, good c g → good c f → good c (g ∘ f)
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.mk|intro|Π {CC} {A B} to_fun, is_equiv to_fun → good CC to_fun → A ≃* B
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.coh_unitr|projection|Π c {A B} g p, compwd c g (λ x, x) p (idwd c A) = p
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.to_fun|projection|Π {CC} {A B}, A ≃* B → obj.U A → obj.U B
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.rec_on|definition|Π {CC} {A B} {C} n, (Π to_fun to_is_equiv wd, C (cequiv.mk to_fun to_is_equiv wd)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|22|12|cCat.arr.cases_on|definition|Π {CC} {A B} {C} n, (Π to_fun wd, C (arr.mk to_fun wd)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.idwd|projection|Π c A, good c (λ x, x)
+d|/home/robin/work/proofs/lean/ccat.hlean|44|13|cCat.arr_inj'|definition|Π {CC} {A B} {f g} p, pathover _ (arr.wd f) p (arr.wd g) → eq f g
+d|/home/robin/work/proofs/lean/ccat.hlean|55|13|cCat.id|definition|Π {CC} A, arr A A
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.to_equiv|definition|Π {CC} {A B}, A ≃* B → obj.U A ≃ obj.U B
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.to_is_equiv|projection|Π {CC} {A B} c, is_equiv (cequiv.to_fun c)
+d|/home/robin/work/proofs/lean/ccat.hlean|22|12|cCat.arr.rec_on|definition|Π {CC} {A B} {C} n, (Π to_fun wd, C (arr.mk to_fun wd)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|78|23|cCat.cequiv.symm|protected|Π {CC} {A B}, cequiv A B → cequiv B A
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv|structure|Π {CC}, obj CC → obj CC → Type
+d|/home/robin/work/proofs/lean/ccat.hlean|22|12|cCat.arr.no_confusion|definition|Π {CC} {A B} {P} {v1 v2}, v1 = v2 → arr.no_confusion_type P v1 v2
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.to_arr|definition|Π {CC} {A B}, A ≃* B → arr A B
+d|/home/robin/work/proofs/lean/ccat.hlean|22|12|cCat.arr.destruct|definition|Π {CC} {A B} {C} n, (Π to_fun wd, C (arr.mk to_fun wd)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.destruct|definition|Π {C} n, (Π data good idwd invwd compwd coh_unitr, C (mk data good idwd invwd compwd coh_unitr)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|22|12|cCat.arr.to_fun|projection|Π {CC} {A B}, arr A B → obj.U A → obj.U B
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.no_confusion|definition|Π {CC} {A B} {P} {v1 v2}, v1 = v2 → cequiv.no_confusion_type P v1 v2
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.to_typeclass|definition|cCat → typeclass
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.good|projection|Π c {A B}, (obj.U A → obj.U B) → Type
+d|/home/robin/work/proofs/lean/ccat.hlean|58|13|cCat.comp|definition|Π {CC} {A B C}, arr B C → arr A B → arr A C
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.wd|projection|Π {CC} {A B} c, good CC (cequiv.to_fun c)
+d|/home/robin/work/proofs/lean/ccat.hlean|38|13|cCat.arr_eta|definition|Π {CC} {A B} f, eq f (arr.mk (arr.to_fun f) (arr.wd f))
+d|/home/robin/work/proofs/lean/ccat.hlean|74|12|cCat.cequiv.destruct|definition|Π {CC} {A B} {C} n, (Π to_fun to_is_equiv wd, C (cequiv.mk to_fun to_is_equiv wd)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|23|4|cCat.arr.mk|intro|Π {CC} {A B} to_fun, good CC to_fun → arr A B
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.invwd|projection|Π c {A B} e, good c (to_fun e) → good c (to_fun e)⁻¹
+d|/home/robin/work/proofs/lean/ccat.hlean|22|12|cCat.arr.rec|recursor|Π {CC} {A B} {C}, (Π to_fun wd, C (arr.mk to_fun wd)) → (Π n, C n)
+d|/home/robin/work/proofs/lean/ccat.hlean|66|13|cCat.unitr|definition|Π {CC} {A B} f, eq (comp f (id A)) f
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.cases_on|definition|Π {C} n, (Π data good idwd invwd compwd coh_unitr, C (mk data good idwd invwd compwd coh_unitr)) → C n
+d|/home/robin/work/proofs/lean/ccat.hlean|12|2|cCat.mk|intro|Π data good idwd, (Π {A B} e, good (to_fun e) → good (to_fun e)⁻¹) → (Π compwd, (Π {A B} g p, compwd g (λ x, x) p (idwd A) = p) → cCat)
+d|/home/robin/work/proofs/lean/ccat.hlean|22|12|cCat.arr.wd|projection|Π {CC} {A B} c, good CC (arr.to_fun c)
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat.rec|recursor|Π {C}, (Π data good idwd invwd compwd coh_unitr, C (mk data good idwd invwd compwd coh_unitr)) → (Π n, C n)
+d|/home/robin/work/proofs/lean/ccat.hlean|30|13|cCat.arr_inj|definition|Π {CC} {A B} {f g} {p} {q} f_is_g, pathover _ p f_is_g q → eq (arr.mk f p) (arr.mk g q)
+d|/home/robin/work/proofs/lean/ccat.hlean|11|10|cCat|structure|Type
+r|/home/robin/work/proofs/lean/ccat.hlean|11|32|typeclass
+r|/home/robin/work/proofs/lean/ccat.hlean|12|19|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|13|17|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|14|20|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|15|23|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|16|24|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|20|18|cCat
+r|/home/robin/work/proofs/lean/ccat.hlean|22|23|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|24|10|cCat.good
+r|/home/robin/work/proofs/lean/ccat.hlean|26|21|pmap
+r|/home/robin/work/proofs/lean/ccat.hlean|30|28|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|30|55|cCat.good
+r|/home/robin/work/proofs/lean/ccat.hlean|30|71|cCat.good
+r|/home/robin/work/proofs/lean/ccat.hlean|31|50|cCat.arr.mk
+r|/home/robin/work/proofs/lean/ccat.hlean|31|63|cCat.arr.mk
+r|/home/robin/work/proofs/lean/ccat.hlean|34|12|congr_arg
+r|/home/robin/work/proofs/lean/ccat.hlean|34|27|cCat.arr.mk
+r|/home/robin/work/proofs/lean/ccat.hlean|35|12|eq.eq_of_pathover_idp
+r|/home/robin/work/proofs/lean/ccat.hlean|38|28|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|38|41|cCat.arr
+r|/home/robin/work/proofs/lean/ccat.hlean|38|56|cCat.arr.mk
+r|/home/robin/work/proofs/lean/ccat.hlean|38|64|cCat.arr.to_fun
+r|/home/robin/work/proofs/lean/ccat.hlean|38|79|cCat.arr.wd
+r|/home/robin/work/proofs/lean/ccat.hlean|44|29|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|44|44|cCat.arr
+r|/home/robin/work/proofs/lean/ccat.hlean|44|58|cCat.arr.to_fun
+r|/home/robin/work/proofs/lean/ccat.hlean|44|73|cCat.arr.to_fun
+r|/home/robin/work/proofs/lean/ccat.hlean|44|92|cCat.arr.wd
+r|/home/robin/work/proofs/lean/ccat.hlean|44|108|cCat.arr.wd
+r|/home/robin/work/proofs/lean/ccat.hlean|47|12|cCat.arr_eta
+r|/home/robin/work/proofs/lean/ccat.hlean|49|12|cCat.arr_inj
+r|/home/robin/work/proofs/lean/ccat.hlean|52|12|cCat.arr_eta
+r|/home/robin/work/proofs/lean/ccat.hlean|55|21|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|55|31|cCat.arr
+r|/home/robin/work/proofs/lean/ccat.hlean|56|4|cCat.arr.mk
+r|/home/robin/work/proofs/lean/ccat.hlean|56|22|cCat.idwd
+r|/home/robin/work/proofs/lean/ccat.hlean|58|27|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|58|40|cCat.arr
+r|/home/robin/work/proofs/lean/ccat.hlean|58|54|cCat.arr
+r|/home/robin/work/proofs/lean/ccat.hlean|58|65|cCat.arr
+r|/home/robin/work/proofs/lean/ccat.hlean|60|12|cCat.arr.mk
+r|/home/robin/work/proofs/lean/ccat.hlean|61|12|cCat.compwd
+r|/home/robin/work/proofs/lean/ccat.hlean|61|27|cCat.arr.wd
+r|/home/robin/work/proofs/lean/ccat.hlean|61|38|cCat.arr.wd
+r|/home/robin/work/proofs/lean/ccat.hlean|64|21|cCat.comp
+r|/home/robin/work/proofs/lean/ccat.hlean|66|26|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|66|39|cCat.arr
+r|/home/robin/work/proofs/lean/ccat.hlean|66|55|cCat.id
+r|/home/robin/work/proofs/lean/ccat.hlean|68|13|cCat.arr_inj'
+r|/home/robin/work/proofs/lean/ccat.hlean|70|12|eq.pathover_idp_of_eq
+r|/home/robin/work/proofs/lean/ccat.hlean|71|12|cCat.coh_unitr
+r|/home/robin/work/proofs/lean/ccat.hlean|74|26|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|74|44|equiv
+r|/home/robin/work/proofs/lean/ccat.hlean|74|55|cCat.arr
+r|/home/robin/work/proofs/lean/ccat.hlean|76|21|cCat.cequiv
+r|/home/robin/work/proofs/lean/ccat.hlean|78|63|typeclass.obj
+r|/home/robin/work/proofs/lean/ccat.hlean|82|14|is_equiv.is_equiv_inv
+r|/home/robin/work/proofs/lean/ccat.hlean|83|14|cCat.invwd
+r|/home/robin/work/proofs/lean/ccat.hlean|83|27|cCat.arr.wd

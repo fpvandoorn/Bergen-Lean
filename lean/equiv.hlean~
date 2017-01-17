@@ -1,0 +1,9 @@
+--Results about equivalences
+
+definition inv_inv {A B : Type} (e : A ≃ B) : e⁻¹⁻¹ = e :=
+  begin
+    apply eq_of_homotopy,
+    intro a,
+    exact equiv.to_inv_eq_of_eq _ (symm (to_left_inv e a))
+  end
+  
