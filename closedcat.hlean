@@ -3,16 +3,16 @@ import .ccat
 
 open eq equiv is_equiv typeclass cCat
 
-structure ccCat.{u v} extends CC:cCat.{u v} : Type.{(max u v)+1} :=
+structure closedCat.{u v} extends CC:cCat.{u v} : Type.{(max u v)+1} :=
   (closed : Π {A B : obj CC} , data (arr A B))
 
-namespace ccCat
+namespace closedCat
   open function
-  variables {C : ccCat}
+  variables {C : closedCat}
 
   definition hom (A B : obj C) : obj C := obj.mk (arr A B) (closed C)
 
-  definition deYonedify.{u v w} {C : ccCat.{u v}} {A B : obj C} (f : Π X, @cequiv.{u v} C (hom A X) (hom B X)) : B → A := 
+  definition deYonedify.{u v w} {C : closedCat.{u v}} {A B : obj C} (f : Π X, @cequiv.{u v} C (hom A X) (hom B X)) : B → A := 
     begin
       refine @arr.to_fun C _ _ _,
       apply equiv.to_fun (f A),

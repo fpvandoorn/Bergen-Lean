@@ -4,8 +4,9 @@ import types.equiv
 import types.pointed
 import .typeclass
 import .ccat
+import .closedcat
 
-open pointed eq equiv is_equiv function typeclass cCat
+open pointed eq equiv is_equiv function typeclass cCat closedCat
 
 --set_option pp.all true
 
