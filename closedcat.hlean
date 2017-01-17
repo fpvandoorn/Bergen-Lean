@@ -12,14 +12,13 @@ namespace closedCat
 
   definition hom (A B : obj C) : obj C := obj.mk (arr A B) (closed C)
 
-  definition deYonedify.{u v w} {C : closedCat.{u v}} {A B : obj C} (f : Π X, @cequiv.{u v} C (hom A X) (hom B X)) : B → A := 
+  definition deYon.{u v w} {C : closedCat.{u v}} {A B : obj C} (f : Π X, @cequiv.{u v} C (hom A X) (hom B X)) : @arr C B A := 
     begin
-      refine @arr.to_fun C _ _ _,
       apply equiv.to_fun (f A),
       apply id
     end
 
-  definition natural {A B : obj C} (e : Π X, @cequiv C (hom A X) (hom B X)) : Type := Π {X Y} (f : arr X Y) (g : arr A X), f ∘* e X g = e Y (f ∘* g)
+  definition natural {A B : obj C} (e : Π X, @cequiv C (hom A X) (hom B X)) : Type := Π {X Y} (f : X →* Y) (g : A →* X), f ∘* e X g = e Y (f ∘* g)
 
   definition equiv_inv_nat {A B : obj C}
     (e : Π X, @cequiv C (hom A X) (hom B X))
@@ -37,6 +36,18 @@ namespace closedCat
         apply equiv_inv (e Y) }}
   end
 
+  definition deYon_inv {A B : obj C}
+    (e : Π X , @cequiv C (hom A X) (hom B X))
+    (enat : natural e) :
+    deYon (λ X , cequiv.symm (e X)) ∘* deYon e = id B :=
+  begin 
+    unfold [deYon],
+    exact calc
+      cequiv.symm (e B) (id B) ∘* e A (id A) = e B (cequiv.symm (e B) (id B) ∘* id A) : enat (cequiv.symm (e B) (id B)) (id A)
+      ... = e B (cequiv.symm (e B) (id B)) : congr_arg _ _ (e B) (unitr (cequiv.symm (e B) (id B)))
+      ... = @id C B : to_right_inv (e B) (id B)
+  end
+
   definition yoneda {A B : obj C} 
     (e : Π (X : obj C) , @cequiv C (hom A X) (hom B X)) 
     (enat : natural e)
@@ -44,17 +55,17 @@ namespace closedCat
     @cequiv C A B :=
     begin
       fapply cequiv.mk,
-      { apply deYonedify,
+      { apply deYon,
         intro X,
         apply cequiv.symm,
         exact (e X) },
       { fapply is_equiv.mk,
-        exact deYonedify e,
+        exact deYon e,
         { apply congr_fun,
           transitivity _,
-          unfold [deYonedify], 
-          refine congr_arg ((e B)⁻¹ᵉ (id B) ∘* e A (id A)) _ arr.to_fun _,
-          refine enat (cequiv.symm (e B) (id B)) (id A) _,
+          unfold [deYon], 
+          apply congr_arg ((e B)⁻¹ᵉ (id B) ∘* e A (id A)) _ arr.to_fun,
+          refine enat (cequiv.symm (e B) (id B)) (id A),
           { transitivity _,
             { apply congr_arg _ _ arr.to_fun,
               apply congr_arg _ _ (e B),
@@ -64,7 +75,7 @@ namespace closedCat
               apply to_eq_of_inv_eq (e B),
               reflexivity } } },
         { apply congr_fun, 
-          unfold [deYonedify],
+          unfold [deYon],
           },
         { } },
       { }

@@ -13,4 +13,3 @@ namespace typeclass
   attribute obj.U [coercion]
 
 end typeclass open typeclass
-

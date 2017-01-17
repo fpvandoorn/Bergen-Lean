@@ -23,7 +23,7 @@ namespace cCat
     (to_fun : A → B)
     (wd : good CC to_fun)
 
-  infix ` →* `:30 := pmap
+  infix ` →* `:30 := arr
 
   attribute arr.to_fun [coercion]
 
@@ -41,7 +41,7 @@ namespace cCat
       reflexivity
     end
 
-  definition arr_inj' {A B : obj CC} {f g : arr A B} (p : arr.to_fun f = arr.to_fun g) (q : arr.wd f =[ p ] arr.wd g) : f = g :=
+  definition arr_inj' {A B : obj CC} {f g : A →* B} (p : arr.to_fun f = arr.to_fun g) (q : arr.wd f =[ p ] arr.wd g) : f = g :=
     begin
       transitivity _,
       apply arr_eta,
@@ -52,10 +52,10 @@ namespace cCat
       exact arr_eta g
     end
 
-  definition id (A : obj CC) : arr A A :=
+  definition id (A : obj CC) : A →* A :=
     arr.mk (λ x , x) (idwd CC A)
 
-  definition comp {A B C : obj CC} (g : arr B C) (f : arr A B) : arr A C :=
+  definition comp {A B C : obj CC} (g : B →* C) (f : A →* B) : A →* C :=
     begin
       apply arr.mk (g ∘ f),
       apply compwd CC g f (arr.wd g) (arr.wd f)
@@ -63,7 +63,7 @@ namespace cCat
 
   infix ` ∘* `:50 := comp
 
-  definition unitr {A B : obj CC} (f : arr A B) : f ∘* id A = f :=
+  definition unitr {A B : obj CC} (f : A →* B) : f ∘* id A = f :=
     begin
       fapply arr_inj',
       reflexivity,
@@ -83,4 +83,3 @@ namespace cCat
       { apply invwd, exact arr.wd f }
     end
 end cCat open cCat
-
