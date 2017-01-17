@@ -71,13 +71,9 @@ namespace closedCat
     end
 
 
-  definition pType₁ : typeclass := typeclass.mk (λ X : Type, X)
-  -- begin
-  --   --fconstructor,
-  --   exact typeclass.mk (λ X : Type, X)
-  -- end
+  definition pType₁ [constructor] : typeclass := typeclass.mk (λ X : Type, X)
 
-  definition pType₂.{u} : cCat.{u u} :=
+  definition pType₂.{u} [constructor] : cCat.{u u} :=
   begin
     fapply cCat.mk (typeclass.data pType₁),
     { intros _ _ f, exact (f (obj.struct A) = obj.struct B) },
@@ -87,15 +83,16 @@ namespace closedCat
     { intros, esimp, exact !idp_con}
   end
 
-  definition pType₃.{u} : closedCat.{u u} :=
-  ⦃closedCat, pType₂, closed := begin intros, end⦄
+open pointed
 
-  -- (good : Π {A B : obj CC} , (A → B) → Type.{u})
-  -- (idwd : Π (A : obj CC), good (λ (x : A) , x))
-  -- (invwd : Π {A B : obj CC} (e : A ≃ B) , good e → good e⁻¹)
-  -- (compwd : Π {A B C : obj CC} (g : B → C) (f : A → B), good g → good f → good (g ∘ f))
-  -- (coh_unitr : Π {A B : obj CC} (g : A → B) (p : good g) ,
-  --   compwd g (λ x , x) p (idwd A) = p)
+  definition pType₃.{u} : closedCat.{u u} :=
+  ⦃closedCat, pType₂, closed := begin
+    intros,
+    fapply arr.mk,
+    { exact (λ x, obj.struct B) },
+    { esimp }
+    end⦄
+
   set_option pp.universes true
   print pType₁
 
