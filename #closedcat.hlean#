@@ -117,7 +117,8 @@ print congr_fun
         apply deYon_inv_deYon',
         apply deYon_deYon_inv',
         { intro x, 
-           } },
+          unfold [deYon, deYon_inv_deYon', deYon_deYon_inv', deYon_inv_deYon, deYon_deYon_inv, congr_fun, congr_arg],
+          esimp, } },
       apply arr.wd
     end
 

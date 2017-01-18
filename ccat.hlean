@@ -75,11 +75,36 @@ namespace cCat
 
   infix ` ≃* `:25 := cequiv
 
-  protected definition cequiv.symm [symm] [constructor] {A B : obj CC} (f : A ≃* B) : B ≃* A :=
+  namespace cequiv
+    variables {A B : obj CC}
+
+    protected definition cong {f g : A → B}
+      (is_equiv_f : is_equiv f) (is_equiv_g : is_equiv g)
+      (good_f : good CC f) (good_g : good CC g)
+      (p : f = g) : is_equiv_f =[ p ] is_equiv_g → good_f =[ p ] good_g →
+      cequiv.mk f is_equiv_f good_f = cequiv.mk g is_equiv_g good_g :=
     begin
-      fconstructor,
-      { exact f⁻¹ᵉ },
-      { apply is_equiv_inv },
-      { apply invwd, exact arr.wd f }
+      induction p,
+      intros is_equiv_hom good_hom,
+      refine congr_arg2 is_equiv_f is_equiv_g _ _ (cequiv.mk f) _ _,
+      exact @eq_of_pathover_idp (A → B) is_equiv f is_equiv_f is_equiv_g is_equiv_hom,
+      exact @eq_of_pathover_idp (A → B) (@good CC A B) f good_f good_g good_hom
     end
+
+    protected definition eta (f : A ≃* B) : cequiv.mk f (cequiv.to_is_equiv f) (cequiv.wd f) = f :=
+    begin
+      induction f,
+      reflexivity
+    end
+
+    protected definition symm [symm] [constructor] (f : A ≃* B) : B ≃* A :=
+      begin
+        fconstructor,
+        { exact f⁻¹ᵉ },
+        { apply is_equiv_inv },
+        { apply invwd, exact arr.wd f }
+      end
+
+  end cequiv
+
 end cCat open cCat
