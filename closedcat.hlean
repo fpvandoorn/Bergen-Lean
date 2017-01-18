@@ -18,7 +18,7 @@ namespace closedCat
 
   namespace equiv_hom
 
-    definition deYon {A B : obj C} (e : equiv_hom A B) : @arr C B A := 
+    definition deYon {A B : obj C} (e : equiv_hom A B) : @arr C B A :=
       begin
         apply equiv.to_fun (e A),
         apply id
@@ -34,7 +34,7 @@ namespace closedCat
     definition natural {A B : obj C} (e : equiv_hom A B) : Type := Π {X Y} (f : X →* Y) (g : A →* X), f ∘* e X g = e Y (f ∘* g)
 
     definition nat_inv {A B : obj C} {e : equiv_hom A B} (enat : natural e) : natural (equiv_hom.symm e) :=
-    begin 
+    begin
       intro X Y f g,
       refine equiv_inj (e Y) (f ∘* (e X)⁻¹ᵉ g) (cequiv.symm (e Y) (f ∘* g)) _,
       transitivity _,
@@ -66,9 +66,9 @@ namespace closedCat
         exact natiso.nat e
       end
 
-  definition deYon_inv_deYon {A B : obj C} (e : natiso A B) : 
+  definition deYon_inv_deYon {A B : obj C} (e : natiso A B) :
     deYon (natiso.symm e) ∘* deYon e = id B :=
-  begin 
+  begin
     unfold [deYon],
     transitivity _,
     apply natiso.nat e,
@@ -78,7 +78,7 @@ namespace closedCat
       { apply to_right_inv (natiso.comp e B) (id B) }}
   end
 
-  definition deYon_inv_deYon' {A B : obj C} (e : natiso A B) (b : B) : 
+  definition deYon_inv_deYon' {A B : obj C} (e : natiso A B) (b : B) :
     deYon (natiso.symm e) (deYon e b) = b :=
   begin
     refine congr_fun _ b,
@@ -98,7 +98,7 @@ namespace closedCat
       { apply to_right_inv }}
   end
 
-  definition deYon_deYon_inv' {A B : obj C} (e : natiso A B) (a : A) : 
+  definition deYon_deYon_inv' {A B : obj C} (e : natiso A B) (a : A) :
     deYon e (deYon (natiso.symm e) a) = a :=
   begin
     refine congr_fun _ a,
@@ -112,12 +112,10 @@ print congr_fun
     begin
       fapply cequiv.mk,
       exact (deYon (natiso.symm e)),
-      { fapply is_equiv.mk,
+      { fapply adjointify,
         exact deYon e,
         apply deYon_inv_deYon',
-        apply deYon_deYon_inv',
-        { intro x, 
-           } },
+        apply deYon_deYon_inv' },
       apply arr.wd
     end
 
@@ -146,5 +144,7 @@ open pointed
 
   set_option pp.universes true
   print pType₁
+
+end natiso
 
 end closedCat
