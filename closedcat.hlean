@@ -36,7 +36,7 @@ namespace closedCat
     definition nat_inv {A B : obj C} {e : equiv_hom A B} (enat : natural e) : natural (equiv_hom.symm e) :=
     begin
       intro X Y f g,
-      refine equiv_inj (e Y) (f ∘* (e X)⁻¹ᵉ g) (cequiv.symm (e Y) (f ∘* g)) _,
+      apply eq_of_fn_eq_fn (e Y),
       transitivity _,
       { symmetry,
         refine enat f ((e X)⁻¹ᵉ g) },
@@ -105,8 +105,6 @@ namespace closedCat
     apply congr_arg (deYon e ∘* deYon (natiso.symm e)) _ arr.to_fun,
     apply deYon_deYon_inv
   end
-
-print congr_fun
 
   definition yoneda {A B : obj C} (e : natiso A B) : @cequiv C A B :=
     begin
