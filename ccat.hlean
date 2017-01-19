@@ -81,13 +81,14 @@ namespace cCat
     protected definition cong {f g : A → B}
       (is_equiv_f : is_equiv f) (is_equiv_g : is_equiv g)
       (good_f : good CC f) (good_g : good CC g)
-      (p : f = g) : is_equiv_f =[ p ] is_equiv_g → good_f =[ p ] good_g →
+      (p : f = g) : good_f =[ p ] good_g →
       cequiv.mk f is_equiv_f good_f = cequiv.mk g is_equiv_g good_g :=
     begin
       induction p,
-      intros is_equiv_hom good_hom,
+      intros good_hom,
       refine congr_arg2 is_equiv_f is_equiv_g _ _ (cequiv.mk f) _ _,
-      exact @eq_of_pathover_idp (A → B) is_equiv f is_equiv_f is_equiv_g is_equiv_hom,
+      refine @eq_of_pathover_idp (A → B) is_equiv f is_equiv_f is_equiv_g _,
+      apply !is_trunc.is_prop.elimo,
       exact @eq_of_pathover_idp (A → B) (@good CC A B) f good_f good_g good_hom
     end
 
