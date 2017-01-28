@@ -12,9 +12,14 @@ structure cCat.{u v} extends CC:typeclass.{u v} : Type.{(max u v)+1} :=
   (good : Π {A B : obj CC} , (A → B) → Type.{u})
   (idwd : Π (A : obj CC), good (λ (x : A) , x))
   (invwd : Π {A B : obj CC} (e : A ≃ B) , good e → good e⁻¹)
-  (compwd : Π {A B C : obj CC} (g : B → C) (f : A → B), good g → good f → good (g ∘ f))
+  (compwd : Π {A B C : obj CC} {g : B → C} {f : A → B}, good g → good f → good (g ∘ f))
+  (coh_unitl : Π {A B : obj CC} (f : A → B) (p : good f) ,
+    compwd (idwd B) p = p)
   (coh_unitr : Π {A B : obj CC} (g : A → B) (p : good g) ,
-    compwd g (λ x , x) p (idwd A) = p)
+    compwd p (idwd A) = p)
+  (coh_assoc : Π {X Y Z W : obj CC} {f : X → Y} {g : Y → Z} {h : Z → W}
+    (p : good f) (q : good g) (r : good h),
+    compwd r (compwd q p) = compwd (compwd r q) p)
 
 namespace cCat
   variables {CC : cCat}
@@ -27,7 +32,7 @@ namespace cCat
 
   attribute arr.to_fun [coercion]
 
-  definition arr_inj {A B : obj CC} {f g : A → B} {p : good CC f} {q : good CC g}
+  definition arr_cong {A B : obj CC} {f g : A → B} {p : good CC f} {q : good CC g}
     (f_is_g : f = g) (p_is_q : p =[ f_is_g ] q) : arr.mk f p = arr.mk g q := 
     begin
       induction f_is_g,
@@ -41,12 +46,12 @@ namespace cCat
       reflexivity
     end
 
-  definition arr_inj' {A B : obj CC} {f g : A →* B} (p : arr.to_fun f = arr.to_fun g) (q : arr.wd f =[ p ] arr.wd g) : f = g :=
+  definition arr_cong' {A B : obj CC} {f g : A →* B} (p : arr.to_fun f = arr.to_fun g) (q : arr.wd f =[ p ] arr.wd g) : f = g :=
     begin
       transitivity _,
       apply arr_eta,
       transitivity _,
-      apply arr_inj,
+      apply arr_cong,
       exact q,
       symmetry,
       exact arr_eta g
@@ -58,20 +63,36 @@ namespace cCat
   definition comp {A B C : obj CC} (g : B →* C) (f : A →* B) : A →* C :=
     begin
       apply arr.mk (g ∘ f),
-      apply compwd CC g f (arr.wd g) (arr.wd f)
+      apply compwd CC (arr.wd g) (arr.wd f)
     end
 
   infix ` ∘* `:50 := comp
 
+  definition unitl {A B : obj CC} (f : A →* B) : cCat.id B ∘* f = f :=
+  begin
+    fapply arr_cong',
+    reflexivity, 
+    apply pathover_idp_of_eq,
+    apply coh_unitl
+  end
+
   definition unitr {A B : obj CC} (f : A →* B) : f ∘* id A = f :=
     begin
-      fapply arr_inj',
+      fapply arr_cong',
       reflexivity,
       apply pathover_idp_of_eq,
       apply coh_unitr
     end
 
-  structure cequiv (A B : obj CC) extends e:equiv A B, arr A B
+  definition assoc {A B C D : obj CC} {f : @arr CC A B} {g : @arr CC B C} {h : @arr CC C D} : h ∘* (g ∘* f) = ((h ∘* g) ∘* f) :=
+  begin
+    fapply arr_cong',
+    reflexivity,
+    { apply pathover_idp_of_eq,
+      apply coh_assoc }
+  end
+
+  structure cequiv (A B : obj CC) extends equiv A B, arr A B
 
   infix ` ≃* `:25 := cequiv
 
