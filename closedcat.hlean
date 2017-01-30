@@ -7,9 +7,9 @@ open eq equiv is_equiv typeclass cCat cCatwHom
 structure closedCat.{u v} extends
   CC'':typeclass.{u v}, CC':cCat.{u v}, CC:cCatwHom.{u v} : Type.{(max u v)+1} :=
   (compr : Π {X Y Z : obj CC''} (f : @cCat.arr CC' Y Z) ,
-    @good (@cCatwHom.hom CC X Y) (cCatwHom.hom X Z) (λ g , f ∘* g))
+    good (@cCatwHom.hom CC X Y) (cCatwHom.hom X Z) (λ g , f ∘* g))
   (coh_compr_id : Π {A X : obj CC''},
-    pathover good (compr (@cCat.id CC' X)) (eq_of_homotopy unitl)
+    pathover (good (@cCatwHom.hom CC A X) (@cCatwHom.hom CC A X)) (compr (@cCat.id CC' X)) (eq_of_homotopy unitl)
     (@idwd (@cCatwHom.hom CC A X)))
 
 open closedCat
