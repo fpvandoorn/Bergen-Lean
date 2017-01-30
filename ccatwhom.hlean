@@ -4,8 +4,8 @@ import .ccat
 
 open eq equiv is_equiv typeclass cCat
 
-structure cCatwHom.{u v} extends CC:cCat.{u v} : Type.{(max u v)+1} :=
-  (closed : Π {A B : obj CC} , data (arr A B))
+structure cCatwHom.{u v} extends CC':typeclass.{u v}, CC:cCat.{u v} : Type.{(max u v)+1} :=
+  (closed : Π {A B : obj CC'} , data (@arr CC A B))
 
 namespace cCatwHom
   open function
@@ -119,4 +119,3 @@ namespace cCatwHom
 end natiso
 
 end cCatwHom open cCatwHom
-

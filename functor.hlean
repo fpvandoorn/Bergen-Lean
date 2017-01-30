@@ -1,4 +1,4 @@
-import .ccat
+import .ccat .closedcat
 
 open eq equiv is_equiv function typeclass cCat
 
@@ -10,19 +10,22 @@ structure functor (C D : cCat) :=
 
 attribute functor.fo [coercion]
 
-/--open functor
+open functor
 
 open closedCat
 
-structure cCat' extends CC:cCat :=
+print closedCat
+print prefix closedCat
+-- structure cCat' extends CC:cCat
 
-namespace cCat'
+-- namespace cCat'
 
-structure closedCat'.{u v} extends CC:closedCat.{u v} , CC':cCat'.{u v} : Type.{(max u v)+1} :=
+-- structure closedCat'.{u v} extends CC:closedCat.{u v} , CC':cCat'.{u v} : Type.{(max u v)+1}
 
-open closedCat'
+-- open closedCat'
 
-definition homf {C : closedCat'} (A : obj C) : functor C C :=
+open cCatwHom
+definition homf {C : closedCat} (A : obj C) : functor C C :=
   begin
     fapply functor.mk,
     exact λ B , @hom C A B,
@@ -43,4 +46,3 @@ definition homf {C : closedCat'} (A : obj C) : functor C C :=
         apply assoc },
       { }}
   end
---/
