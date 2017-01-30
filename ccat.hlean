@@ -9,16 +9,16 @@ import .typeclass
 open eq equiv is_equiv function typeclass
 
 structure cCat.{u v} extends CC:typeclass.{u v} : Type.{(max u v)+1} :=
-  (good : Π {A B : obj CC} , (A → B) → Type.{u})
-  (idwd : Π (A : obj CC), good (λ (x : A) , x))
-  (invwd : Π {A B : obj CC} (e : A ≃ B) , good e → good e⁻¹)
-  (compwd : Π {A B C : obj CC} {g : B → C} {f : A → B}, good g → good f → good (g ∘ f))
-  (coh_unitl : Π {A B : obj CC} (f : A → B) (p : good f) ,
+  (good : Π (A B : obj CC) , (A → B) → Type.{u})
+  (idwd : Π (A : obj CC), good A A (λ (x : A) , x))
+  (invwd : Π {A B : obj CC} (e : A ≃ B) , good A B e → good B A e⁻¹)
+  (compwd : Π {A B C : obj CC} {g : B → C} {f : A → B}, good B C g → good A B f → good A C (g ∘ f))
+  (coh_unitl : Π {A B : obj CC} (f : A → B) (p : good A B f) ,
     compwd (idwd B) p = p)
-  (coh_unitr : Π {A B : obj CC} (g : A → B) (p : good g) ,
+  (coh_unitr : Π {A B : obj CC} (g : A → B) (p : good A B g) ,
     compwd p (idwd A) = p)
   (coh_assoc : Π {X Y Z W : obj CC} {f : X → Y} {g : Y → Z} {h : Z → W}
-    (p : good f) (q : good g) (r : good h),
+    (p : good X Y f) (q : good Y Z g) (r : good Z W h),
     compwd r (compwd q p) = compwd (compwd r q) p)
 
 namespace cCat
@@ -26,13 +26,13 @@ namespace cCat
 
   structure arr (A B : obj CC) :=
     (to_fun : A → B)
-    (wd : good CC to_fun)
+    (wd : good CC A B to_fun)
 
   infix ` →* `:30 := arr
 
   attribute arr.to_fun [coercion]
 
-  definition arr_cong {A B : obj CC} {f g : A → B} {p : good CC f} {q : good CC g}
+  definition arr_cong {A B : obj CC} {f g : A → B} {p : good CC A B f} {q : good CC A B g}
     (f_is_g : f = g) (p_is_q : p =[ f_is_g ] q) : arr.mk f p = arr.mk g q := 
     begin
       induction f_is_g,
@@ -101,7 +101,7 @@ namespace cCat
 
     protected definition cong {f g : A → B}
       (is_equiv_f : is_equiv f) (is_equiv_g : is_equiv g)
-      (good_f : good CC f) (good_g : good CC g)
+      (good_f : good CC A B f) (good_g : good CC A B g)
       (p : f = g) : good_f =[ p ] good_g →
       cequiv.mk f is_equiv_f good_f = cequiv.mk g is_equiv_g good_g :=
     begin

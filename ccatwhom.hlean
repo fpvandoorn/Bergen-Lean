@@ -70,7 +70,6 @@ namespace cCatwHom
   definition deYon_inv_deYon {A B : obj C} (e : natiso A B) :
     deYon (natiso.symm e) ∘* deYon e = id B :=
   begin
-    unfold [deYon],
     transitivity _,
     apply natiso.nat e,
     { transitivity _,
@@ -90,7 +89,6 @@ namespace cCatwHom
   definition deYon_deYon_inv {A B : obj C} (e : natiso A B) :
     deYon e ∘* deYon (natiso.symm e) = id A :=
   begin
-    unfold [deYon],
     transitivity _,
     { apply @nat_inv C A B (natiso.comp e) (@natiso.nat C A B e) },
     { transitivity _,
