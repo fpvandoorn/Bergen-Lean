@@ -3,7 +3,6 @@
 -- The arrows are the 'good' maps
 
 import types.equiv
-import .equiv
 import .typeclass
 
 open eq equiv is_equiv function typeclass
@@ -33,7 +32,7 @@ namespace cCat
   attribute arr.to_fun [coercion]
 
   definition arr_cong {A B : obj CC} {f g : A → B} {p : good CC f} {q : good CC g}
-    (f_is_g : f = g) (p_is_q : p =[ f_is_g ] q) : arr.mk f p = arr.mk g q := 
+    (f_is_g : f = g) (p_is_q : p =[ f_is_g ] q) : arr.mk f p = arr.mk g q :=
     begin
       induction f_is_g,
       apply congr_arg _ _ (arr.mk f),
@@ -71,7 +70,7 @@ namespace cCat
   definition unitl {A B : obj CC} (f : A →* B) : cCat.id B ∘* f = f :=
   begin
     fapply arr_cong',
-    reflexivity, 
+    reflexivity,
     apply pathover_idp_of_eq,
     apply coh_unitl
   end

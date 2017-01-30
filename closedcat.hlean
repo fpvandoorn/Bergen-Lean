@@ -1,13 +1,16 @@
 --Closed concrete infinity-category
 import .ccat
 import .ccatwhom
-import .functor
 
-open eq equiv is_equiv typeclass cCat
+open eq equiv is_equiv typeclass cCat cCatwHom
 
-structure closedCat extends CC:cCatwHom :=
-  (compr : Π {X Y Z : obj CC} (f : @cCat.arr CC Y Z) , @cCatwHom.good CC (@cCatwHom.hom CC X Y) (cCatwHom.hom X Z) (λ g , f ∘* g))
-  (coh_compr_id : Π {A X}, compr (@cCat.id CC X) =[ eq_of_homotopy (λ g , unitl g) ] @cCatwHom.idwd CC (cCatwHom.hom A X))
+structure closedCat.{u v} extends
+  CC'':typeclass.{u v}, CC':cCat.{u v}, CC:cCatwHom.{u v} : Type.{(max u v)+1} :=
+  (compr : Π {X Y Z : obj CC''} (f : @cCat.arr CC' Y Z) ,
+    @good (@cCatwHom.hom CC X Y) (cCatwHom.hom X Z) (λ g , f ∘* g))
+  (coh_compr_id : Π {A X : obj CC''},
+    pathover good (compr (@cCat.id CC' X)) (eq_of_homotopy unitl)
+    (@idwd (@cCatwHom.hom CC A X)))
 
 open closedCat
 
@@ -19,20 +22,20 @@ begin
   apply compr
 end
 
-definition homf {C : closedCat} (A : obj C) : functor C C :=
-begin
-  fapply functor.mk,
-  { exact (@hom C A) },
-  { intro X Y,
-    apply @homfo C },
-  { intro X,
-    fapply arr_cong,
-    { apply eq_of_homotopy,
-      intro f,
-      apply unitl },
-    { }},
-  { }
-end
+-- definition homf {C : closedCat} (A : obj C) : functor C C :=
+-- begin
+--   fapply functor.mk,
+--   { exact (@hom C A) },
+--   { intro X Y,
+--     apply @homfo C },
+--   { intro X,
+--     fapply arr_cong,
+--     { apply eq_of_homotopy,
+--       intro f,
+--       apply unitl },
+--     { }},
+--   { }
+-- end
 
 /-- definition pType₁ [constructor] : typeclass := typeclass.mk (λ X : Type, X)
 
@@ -58,5 +61,3 @@ end⦄
 
   set_option pp.universes true
   print pType₁ --/
-
-
