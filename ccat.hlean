@@ -3,35 +3,78 @@
 -- The arrows are the 'good' maps
 
 import types.equiv
-import .typeclass
 
-open eq equiv is_equiv function typeclass
+open eq equiv is_equiv function
 
-structure cCat.{u v} extends CC:typeclass.{u v} : Type.{(max u v)+1} :=
-  (good : Π (A B : obj CC) , (A → B) → Type.{u})
-  (idwd : Π (A : obj CC), good A A (λ (x : A) , x))
-  (invwd : Π {A B : obj CC} (e : A ≃ B) , good A B e → good B A e⁻¹)
-  (compwd : Π {A B C : obj CC} {g : B → C} {f : A → B}, good B C g → good A B f → good A C (g ∘ f))
-  (coh_unitl : Π {A B : obj CC} (f : A → B) (p : good A B f) ,
-    compwd (idwd B) p = p)
-  (coh_unitr : Π {A B : obj CC} (g : A → B) (p : good A B g) ,
-    compwd p (idwd A) = p)
-  (coh_assoc : Π {X Y Z W : obj CC} {f : X → Y} {g : Y → Z} {h : Z → W}
-    (p : good X Y f) (q : good Y Z g) (r : good Z W h),
-    compwd r (compwd q p) = compwd (compwd r q) p)
+structure cCat.{u v w} : Type.{(max u v w)+1} :=
+  (data : Type.{u} → Type.{v})
+  (_good : Π (A B : Type) , data A → data B → (A → B) → Type.{w})
+  (_idwd : Π (A : Type) (Ad : data A), _good A A Ad Ad (λ (x : A) , x))
+  (_invwd : Π {A B : Type} {Ad : data A} {Bd : data B} (e : A ≃ B) , _good A B Ad Bd e → _good B A Bd Ad e⁻¹)
+  (_compwd : Π {A B C : Type} {Ad : data A} {Bd : data B} {Cd : data C} {g : B → C} {f : A → B}, 
+    _good B C Bd Cd g → _good A B Ad Bd f → _good A C Ad Cd (g ∘ f))
+  (_coh_unitl : Π {A B : Type} {Ad : data A} {Bd : data B} (f : A → B) (p : _good A B Ad Bd f) ,
+    _compwd (_idwd B Bd) p = p)
+  (_coh_unitr : Π {A B : Type} {Ad : data A} {Bd : data B} (g : A → B) (p : _good A B Ad Bd g) ,
+    _compwd p (_idwd A Ad) = p)
+  (_coh_assoc : Π {X Y Z W : Type} {Xd : data X} {Yd : data Y} {Zd : data Z} {Wd : data W} {f : X → Y} {g : Y → Z} {h : Z → W}
+    (p : _good X Y Xd Yd f) (q : _good Y Z Yd Zd g) (r : _good Z W Zd Wd h),
+    _compwd r (_compwd q p) = _compwd (_compwd r q) p)
 
 namespace cCat
-  variables {CC : cCat}
+  structure obj.{u v w} (CC : cCat.{u v w}) : Type.{max (u+1) v} :=
+    (U : Type)
+    (struct : data CC U)
+
+  attribute obj.U [coercion]
+
+  definition good.{u v w} {CC : cCat.{u v w}} (A B : obj CC) (f : A → B) : Type.{w} := 
+    begin
+      exact _good CC A B (obj.struct A) (obj.struct B) f
+    end
+
+  variables {CC : cCat} 
+
+  definition idwd (A : obj CC) : good A A (λ (x : A) , x) :=
+    begin
+      exact _idwd CC A (obj.struct A)
+    end
+
+  definition invwd {A B : obj CC} (e : A ≃ B) (eg : good A B e) : good B A e⁻¹ :=     begin
+      exact _invwd CC e eg
+    end
+
+  definition compwd {A B C : obj CC} {g : B → C} {f : A → B} (gg : good B C g) (fg : good A B f) : good A C (g ∘ f) := 
+    begin
+      exact _compwd CC gg fg
+    end
+
+  definition coh_unitl {A B : obj CC} (f : A → B) (fg : good A B f) : compwd (idwd B) fg = fg :=
+    begin
+      exact _coh_unitl CC f fg
+    end
+
+  definition coh_unitr {A B : obj CC} (g : A → B) (gg : good A B g) : compwd gg (idwd A) = gg :=
+    begin
+      exact _coh_unitr CC g gg
+    end
+
+  definition coh_assoc {X Y Z W : obj CC} {f : X → Y} {g : Y → Z} {h : Z → W}
+    (fg : good X Y f) (gg : good Y Z g) (hg : good Z W h) :
+    compwd hg (compwd gg fg) = compwd (compwd hg gg) fg := 
+    begin
+      exact _coh_assoc CC fg gg hg
+    end
 
   structure arr (A B : obj CC) :=
     (to_fun : A → B)
-    (wd : good CC A B to_fun)
+    (wd : good A B to_fun)
 
   infix ` →* `:30 := arr
 
   attribute arr.to_fun [coercion]
 
-  definition arr_cong {A B : obj CC} {f g : A → B} {p : good CC A B f} {q : good CC A B g}
+  definition arr_cong {A B : obj CC} {f g : A → B} {p : good A B f} {q : good A B g}
     (f_is_g : f = g) (p_is_q : p =[ f_is_g ] q) : arr.mk f p = arr.mk g q := 
     begin
       induction f_is_g,
@@ -56,13 +99,12 @@ namespace cCat
       exact arr_eta g
     end
 
-  definition id (A : obj CC) : A →* A :=
-    arr.mk (λ x , x) (idwd CC A)
+  definition id (A : obj CC) : A →* A := arr.mk (λ x , x) (idwd A)
 
   definition comp {A B C : obj CC} (g : B →* C) (f : A →* B) : A →* C :=
     begin
       apply arr.mk (g ∘ f),
-      apply compwd CC (arr.wd g) (arr.wd f)
+      apply compwd (arr.wd g) (arr.wd f)
     end
 
   infix ` ∘* `:50 := comp
@@ -100,7 +142,7 @@ namespace cCat
 
     protected definition cong {f g : A → B}
       (is_equiv_f : is_equiv f) (is_equiv_g : is_equiv g)
-      (good_f : good CC A B f) (good_g : good CC A B g)
+      (good_f : good A B f) (good_g : good A B g)
       (p : f = g) : good_f =[ p ] good_g →
       cequiv.mk f is_equiv_f good_f = cequiv.mk g is_equiv_g good_g :=
     begin

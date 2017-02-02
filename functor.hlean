@@ -1,6 +1,6 @@
-import .ccat .closedcat
+import .ccat
 
-open eq equiv is_equiv function typeclass cCat
+open eq equiv is_equiv function cCat
 
 structure functor (C D : cCat) :=
   (fo : obj C → obj D)
@@ -12,7 +12,7 @@ attribute functor.fo [coercion]
 
 open functor
 
-open closedCat
+/--open closedCat
 
 print closedCat
 print prefix closedCat
@@ -45,4 +45,4 @@ definition homf {C : closedCat} (A : obj C) : functor C C :=
         intro h,
         apply assoc },
       { }}
-  end
+  end --/

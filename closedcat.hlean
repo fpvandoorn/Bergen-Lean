@@ -1,41 +1,83 @@
 --Closed concrete infinity-category
 import .ccat
 import .ccatwhom
+import .functor
+open function eq equiv is_equiv cCat cCatwHom
 
-open eq equiv is_equiv typeclass cCat cCatwHom
+structure closedCat.{u v} extends CC:cCatwHom.{u v} : Type.{(max u v)+1} :=
+  (_compr : Π X {Y Z : Type} (Xd : data X) {Yd : data Y} {Zd : data Z}
+    (f : Y → Z) (fg : _good Y Z Yd Zd f), _good (arr (obj.mk X Xd) (obj.mk Y Yd)) (arr (obj.mk X Xd) (obj.mk Z Zd)) (_closed Xd Yd) (_closed Xd Zd) 
+    (λ g , (arr.mk f fg) ∘* g))
+  (_coh_compr_id : Π {A X : Type} {Ad : data A} {Xd : data X},
+    pathover (_good (arr (obj.mk A Ad) (obj.mk X Xd)) (arr (obj.mk A Ad) (obj.mk X Xd)) (_closed Ad Xd) (_closed Ad Xd)) (_compr A Ad (λ x , x) (_idwd X Xd)) 
+      (eq_of_homotopy unitl)
+      (_idwd _ (_closed Ad Xd)))
+  (_coh_compr_assoc : Π {A X Y Z : Type} {Ad : data A} {Xd : data X} {Yd : data Y} {Zd : data Z}
+    (f : X → Y) (fg : _good X Y Xd Yd f) (g : Y → Z) (gg : _good Y Z Yd Zd g),
+      _compwd (_compr A Ad g gg) (_compr A Ad f fg) =[ eq_of_homotopy (λ h , assoc) ] _compr A Ad (g ∘ f) (_compwd gg fg))
 
-structure closedCat.{u v} extends
-  CC'':typeclass.{u v}, CC':cCat.{u v}, CC:cCatwHom.{u v} : Type.{(max u v)+1} :=
-  (compr : Π {X Y Z : obj CC''} (f : @cCat.arr CC' Y Z) ,
-    good (@cCatwHom.hom CC X Y) (cCatwHom.hom X Z) (λ g , f ∘* g))
-  (coh_compr_id : Π {A X : obj CC''},
-    pathover (good (@cCatwHom.hom CC A X) (@cCatwHom.hom CC A X)) (compr (@cCat.id CC' X)) (eq_of_homotopy unitl)
-    (@idwd (@cCatwHom.hom CC A X)))
+namespace closedCat
+  variables {CC : closedCat}
 
-open closedCat
+  definition compr X {Y Z : obj CC} (f : Y →* Z) : good (@hom CC X Y) (hom X Z) (λ g , f ∘* g) :=
+    begin
+      induction X,
+      induction Y,
+      induction Z,
+      unfold good,
+      apply _compr
+    end
 
-definition homfo {C : closedCat} {A X Y : obj C} : @arr C X Y → @arr C (@hom C A X) (@hom C A Y) :=
-begin
-  intro f,
-  fapply arr.mk,
-  exact λ g , f ∘* g,
-  apply compr
-end
+  definition coh_compr_id {A X : obj CC} : 
+    compr A (id X) =[ eq_of_homotopy unitl ] idwd (hom A X) :=
+  begin
+    induction A,
+    induction X,
+    apply _coh_compr_id
+  end
 
--- definition homf {C : closedCat} (A : obj C) : functor C C :=
--- begin
---   fapply functor.mk,
---   { exact (@hom C A) },
---   { intro X Y,
---     apply @homfo C },
---   { intro X,
---     fapply arr_cong,
---     { apply eq_of_homotopy,
---       intro f,
---       apply unitl },
---     { }},
---   { }
--- end
+  definition coh_compr_assoc {A X Y Z : obj CC} (f : X →* Y) (g : Y →* Z) :
+    compwd (compr A g) (compr A f) =[ eq_of_homotopy (λ h , assoc) ] compr A (g ∘* f) :=
+  begin
+    induction A,
+    induction X,
+    induction Y,
+    induction Z,
+    induction f,
+    induction g,
+    apply _coh_compr_assoc
+  end
+
+  definition homfo {A X Y : obj CC} : @arr CC X Y → @arr CC (@hom CC A X) (@hom CC A Y) :=
+  begin
+    intro f,
+    fapply arr.mk,
+    exact λ g , f ∘* g,
+    apply compr
+  end
+
+  definition homf {CC : closedCat} (A : obj CC) : functor CC CC :=
+  begin
+    fapply functor.mk,
+    { exact (@hom CC A) },
+    { intro X Y,
+      apply @homfo CC },
+    { intro X,
+      fapply arr_cong,
+      { apply eq_of_homotopy,
+        intro f,
+        apply unitl },
+      { apply coh_compr_id }},
+    { intro X Y Z f g,
+      symmetry,
+      fapply arr_cong,
+      { apply eq_of_homotopy,
+        intro h,
+        apply assoc },
+      { unfold homfo,
+        apply coh_compr_assoc }}
+  end
+end closedCat
 
 /-- definition pType₁ [constructor] : typeclass := typeclass.mk (λ X : Type, X)
 
