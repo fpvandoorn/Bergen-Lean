@@ -20,6 +20,8 @@ structure cCat.{u v w} : Type.{(max u v w)+1} :=
   (_coh_assoc : Π {X Y Z W : Type} {Xd : data X} {Yd : data Y} {Zd : data Z} {Wd : data W} {f : X → Y} {g : Y → Z} {h : Z → W}
     (p : _good X Y Xd Yd f) (q : _good Y Z Yd Zd g) (r : _good Z W Zd Wd h),
     _compwd r (_compwd q p) = _compwd (_compwd r q) p)
+  (_coh_inv : Π {A B : Type} {Ad : data A} {Bd : data B} (e : A ≃ B) (eg : _good A B Ad Bd e),
+    _compwd (_invwd e eg) eg =[ eq_of_homotopy (to_left_inv e) ] _idwd A Ad)
 
 namespace cCat
   structure obj.{u v w} (CC : cCat.{u v w}) : Type.{max (u+1) v} :=
@@ -167,6 +169,21 @@ namespace cCat
         { apply is_equiv_inv },
         { apply invwd, exact arr.wd f }
       end
+
+  definition coh_inv (e : A ≃ B) (eg : good A B e) : compwd (invwd e eg) eg =[ eq_of_homotopy (to_left_inv e) ] idwd A :=
+  begin
+    induction A,
+    induction B,
+    apply _coh_inv
+  end
+
+  protected definition to_left_inv (f : A ≃* B) : cequiv.symm f ∘* f = id A :=
+  begin
+    fapply arr_cong,
+    { apply eq_of_homotopy,
+      apply to_left_inv },
+    { apply coh_inv }
+  end
 
   end cequiv
 

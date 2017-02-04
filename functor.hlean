@@ -10,6 +10,41 @@ structure functor (C D : cCat) :=
 
 attribute functor.fo [coercion]
 
+namespace functor
+  protected definition comp {C D E : cCat} : functor D E → functor C D → functor C E :=
+  begin
+    intro G F,
+    fapply mk,
+    { exact functor.fo G ∘ functor.fo F },
+    { intro X Y,
+      exact functor.fa G ∘ functor.fa F },
+    { intro X,
+      exact calc
+        fa G (fa F (id X)) = fa G (id (fo F X)) : ap (fa G) (functor.fid F X)
+        ... = id (fo G (fo F X)) : functor.fid G (fo F X) },
+    { intro X Y Z f g,
+      exact calc
+        fa G (fa F (g ∘* f)) = fa G (fa F g ∘* fa F f) : ap (fa G) (functor.fcomp F)
+        ... = (fa G (fa F g) ∘* fa G (fa F f)) : functor.fcomp G}
+  end
+
+  definition pres_equiv {C D : cCat} {F : functor C D} {A B : obj C} : A ≃* B → fo F A ≃* fo F B :=
+  begin
+    intro alpha,
+    fapply cequiv.mk,
+    { exact fa F alpha },
+    { fapply is_equiv.mk,
+      { exact fa F (cequiv.symm alpha) },
+      { apply homotopy_of_eq,
+        exact calc
+          fa F alpha ∘ fa F (cequiv.symm alpha) = fa F (alpha ∘* cequiv.symm alpha) : ap arr.to_fun (inverse (@functor.fcomp C D F B A B (cequiv.symm alpha) alpha))
+          ... = fa F (id B) : ap arr.to_fun (ap (fa F) _)
+          ... = λ x, x : _},
+      { }},
+    { }
+  end
+end functor
+
 open functor
 
 /--open closedCat
