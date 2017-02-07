@@ -2,8 +2,6 @@
 -- An object consists of a type plus some data
 -- The arrows are the 'good' maps
 
-import types.equiv
-
 open eq equiv is_equiv function
 
 structure cCat.{u v w} : Type.{(max u v w)+1} :=
