@@ -20,8 +20,10 @@ structure cCat.{u v w} : Type.{(max u v w)+1} :=
   (_coh_assoc : Π {X Y Z W : Type} {Xd : data X} {Yd : data Y} {Zd : data Z} {Wd : data W} {f : X → Y} {g : Y → Z} {h : Z → W}
     (p : _good X Y Xd Yd f) (q : _good Y Z Yd Zd g) (r : _good Z W Zd Wd h),
     _compwd r (_compwd q p) = _compwd (_compwd r q) p)
-  (_coh_inv : Π {A B : Type} {Ad : data A} {Bd : data B} (e : A ≃ B) (eg : _good A B Ad Bd e),
+  (_coh_invl : Π {A B : Type} {Ad : data A} {Bd : data B} (e : A ≃ B) (eg : _good A B Ad Bd e),
     _compwd (_invwd e eg) eg =[ eq_of_homotopy (to_left_inv e) ] _idwd A Ad)
+  (_coh_invr : Π {A B : Type} {Ad : data A} {Bd : data B} (e : A ≃ B) (eg : _good A B Ad Bd e),
+    _compwd eg (_invwd e eg) =[ eq_of_homotopy (to_right_inv e) ] _idwd B Bd)
 
 namespace cCat
   structure obj.{u v w} (CC : cCat.{u v w}) : Type.{max (u+1) v} :=
@@ -67,6 +69,17 @@ namespace cCat
     begin
       exact _coh_assoc CC fg gg hg
     end
+
+  definition coh_invl {A B : obj CC} (e : A ≃ B) (eg : good A B e) : compwd (invwd e eg) eg =[ eq_of_homotopy (to_left_inv e) ] idwd A :=
+  begin
+    apply _coh_invl
+  end
+
+  definition coh_invr {A B : obj CC} (e : A ≃ B) (eg : good A B e) :
+    compwd eg (invwd e eg) =[ eq_of_homotopy (to_right_inv e) ] idwd B :=
+  begin
+    apply _coh_invr
+  end
 
   structure arr (A B : obj CC) :=
     (to_fun : A → B)
@@ -170,20 +183,38 @@ namespace cCat
         { apply invwd, exact arr.wd f }
       end
 
-  definition coh_inv (e : A ≃ B) (eg : good A B e) : compwd (invwd e eg) eg =[ eq_of_homotopy (to_left_inv e) ] idwd A :=
-  begin
-    induction A,
-    induction B,
-    apply _coh_inv
-  end
+    postfix ⁻¹ := cequiv.symm
 
-  protected definition to_left_inv (f : A ≃* B) : cequiv.symm f ∘* f = id A :=
-  begin
-    fapply arr_cong,
-    { apply eq_of_homotopy,
-      apply to_left_inv },
-    { apply coh_inv }
-  end
+    protected definition to_left_inv (f : A ≃* B) : cequiv.symm f ∘* f = id A :=
+    begin
+      fapply arr_cong,
+      { apply eq_of_homotopy,
+        apply to_left_inv },
+      { apply coh_invl }
+    end
+
+    protected definition to_right_inv (f : A ≃* B) : f ∘* cequiv.symm f = id B :=
+    begin
+      fapply arr_cong,
+      { apply eq_of_homotopy,
+        intro x,
+        apply to_right_inv f },
+      { apply coh_invr }
+    end
+
+    protected definition mk' (f : A →* B) (g : B →* A) : g ∘* f = id A → f ∘* g = id B → A ≃* B :=
+    begin
+      intro gf_is_id fg_is_id,
+      fapply mk,
+      { exact f },
+      { fapply adjointify,
+        { exact g },
+        { apply homotopy_of_eq,
+          exact congr_arg _ _ arr.to_fun fg_is_id },
+        { apply homotopy_of_eq,
+          exact congr_arg _ _ arr.to_fun gf_is_id }},
+      { apply arr.wd }
+    end
 
   end cequiv
 

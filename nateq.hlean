@@ -16,7 +16,12 @@ namespace nateq
     intro alpha,
     fapply mk,
     { intro X,
-      apply ap (fo H), },
-    { }
+      apply @pres_equiv D E H,
+      exact nateq.comp alpha X },
+    { intro X Y f,
+      exact calc
+        fa H (fa G f) ∘* fa H (comp alpha X) = fa H (fa G f ∘* comp alpha X) : functor.fcomp
+        ... = fa H (comp alpha Y ∘* fa F f) : ap (fa H) (nateq.nat alpha)
+        ... = (fa H (comp alpha Y) ∘* fa H (fa F f)) : (functor.fcomp H)⁻¹ }
   end
 end nateq

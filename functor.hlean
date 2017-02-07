@@ -1,6 +1,6 @@
 import .ccat
 
-open eq equiv is_equiv function cCat
+open eq equiv is_equiv function cCat cCat.cequiv
 
 structure functor (C D : cCat) :=
   (fo : obj C → obj D)
@@ -31,21 +31,21 @@ namespace functor
   definition pres_equiv {C D : cCat} {F : functor C D} {A B : obj C} : A ≃* B → fo F A ≃* fo F B :=
   begin
     intro alpha,
-    fapply cequiv.mk,
+    fapply cequiv.mk',
     { exact fa F alpha },
-    { fapply is_equiv.mk,
-      { exact fa F (cequiv.symm alpha) },
-      { apply homotopy_of_eq,
-        exact calc
-          fa F alpha ∘ fa F (cequiv.symm alpha) = fa F (alpha ∘* cequiv.symm alpha) : ap arr.to_fun (inverse (@functor.fcomp C D F B A B (cequiv.symm alpha) alpha))
-          ... = fa F (id B) : ap arr.to_fun (ap (fa F) _)
-          ... = λ x, x : _},
-      { }},
-    { }
+    { exact fa F (cequiv.to_arr alpha⁻¹) },
+    { exact calc
+      fa F (to_arr alpha⁻¹) ∘* fa F (to_arr alpha) = fa F (to_arr alpha⁻¹ ∘* to_arr alpha) : (functor.fcomp F)⁻¹
+      ... = fa F (id A) : ap (fa F) (cequiv.to_left_inv alpha)
+      ... = id (fo F A) : functor.fid F A},
+    { exact calc
+      fa F (to_arr alpha) ∘* fa F (to_arr alpha⁻¹) = fa F (to_arr alpha ∘* to_arr alpha⁻¹) : (functor.fcomp F)⁻¹
+      ... = fa F (id B) : ap (fa F) (cequiv.to_right_inv alpha)
+      ... = id (fo F B) : functor.fid F B} --/
   end
-end functor
+--Note: to_arr (pres_equiv e) is definitionally equal to fa F (to_arr e)
 
-open functor
+end functor
 
 /--open closedCat
 
