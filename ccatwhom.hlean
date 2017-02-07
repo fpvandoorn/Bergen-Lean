@@ -57,65 +57,65 @@ namespace cCatwHom
 
   end equiv_hom open equiv_hom
 
-  structure natiso (A B : obj CC) :=
+  structure nat_equiv_hom (A B : obj CC) :=
     (comp : equiv_hom A B)
     (nat : natural comp)
 
-  attribute natiso.comp [coercion]
+  attribute nat_equiv_hom.comp [coercion]
 
-  namespace natiso
+  namespace nat_equiv_hom
 
-    protected definition symm [symm] {A B : obj CC} (e : natiso A B) : natiso B A :=
+    protected definition symm [symm] {A B : obj CC} (e : nat_equiv_hom A B) : nat_equiv_hom B A :=
       begin
-        fapply natiso.mk,
+        fapply nat_equiv_hom.mk,
         exact equiv_hom.symm e,
         apply equiv_hom.nat_inv,
         intro X Y,
-        exact natiso.nat e
+        exact nat_equiv_hom.nat e
       end
 
-  definition deYon_inv_deYon {A B : obj CC} (e : natiso A B) :
-    deYon (natiso.symm e) ∘* deYon e = id B :=
+  definition deYon_inv_deYon {A B : obj CC} (e : nat_equiv_hom A B) :
+    deYon (nat_equiv_hom.symm e) ∘* deYon e = id B :=
   begin
     transitivity _,
-    apply natiso.nat e,
+    apply nat_equiv_hom.nat e,
     { transitivity _,
-      { apply congr_arg _ _ (natiso.comp e B),
+      { apply congr_arg _ _ (nat_equiv_hom.comp e B),
         apply unitr },
-      { apply to_right_inv (natiso.comp e B) (id B) }}
+      { apply to_right_inv (nat_equiv_hom.comp e B) (id B) }}
   end
 
-  definition deYon_inv_deYon' {A B : obj CC} (e : natiso A B) (b : B) :
-    deYon (natiso.symm e) (deYon e b) = b :=
+  definition deYon_inv_deYon' {A B : obj CC} (e : nat_equiv_hom A B) (b : B) :
+    deYon (nat_equiv_hom.symm e) (deYon e b) = b :=
   begin
     refine congr_fun _ b,
-    apply congr_arg (deYon (natiso.symm e) ∘* deYon e) _ arr.to_fun,
+    apply congr_arg (deYon (nat_equiv_hom.symm e) ∘* deYon e) _ arr.to_fun,
     apply deYon_inv_deYon
   end
 
-  definition deYon_deYon_inv {A B : obj CC} (e : natiso A B) :
-    deYon e ∘* deYon (natiso.symm e) = id A :=
+  definition deYon_deYon_inv {A B : obj CC} (e : nat_equiv_hom A B) :
+    deYon e ∘* deYon (nat_equiv_hom.symm e) = id A :=
   begin
     transitivity _,
-    { apply @nat_inv CC A B (natiso.comp e) (@natiso.nat CC A B e) },
+    { apply @nat_inv CC A B (nat_equiv_hom.comp e) (@nat_equiv_hom.nat CC A B e) },
     { transitivity _,
-      { apply congr_arg _ _ (natiso.comp (natiso.symm e) A),
+      { apply congr_arg _ _ (nat_equiv_hom.comp (nat_equiv_hom.symm e) A),
         apply unitr },
       { apply to_right_inv }}
   end
 
-  definition deYon_deYon_inv' {A B : obj CC} (e : natiso A B) (a : A) :
-    deYon e (deYon (natiso.symm e) a) = a :=
+  definition deYon_deYon_inv' {A B : obj CC} (e : nat_equiv_hom A B) (a : A) :
+    deYon e (deYon (nat_equiv_hom.symm e) a) = a :=
   begin
     refine congr_fun _ a,
-    apply congr_arg (deYon e ∘* deYon (natiso.symm e)) _ arr.to_fun,
+    apply congr_arg (deYon e ∘* deYon (nat_equiv_hom.symm e)) _ arr.to_fun,
     apply deYon_deYon_inv
   end
 
-  definition yoneda {A B : obj CC} (e : natiso A B) : @cequiv CC A B :=
+  definition yoneda {A B : obj CC} (e : nat_equiv_hom A B) : @cequiv CC A B :=
     begin
       fapply cequiv.mk,
-      exact (deYon (natiso.symm e)),
+      exact (deYon (nat_equiv_hom.symm e)),
       { fapply adjointify,
         exact deYon e,
         apply deYon_inv_deYon',
@@ -123,6 +123,6 @@ namespace cCatwHom
       apply arr.wd
     end
 
-end natiso
+end nat_equiv_hom
 
-end cCatwHom open cCatwHom
+end cCatwHom
