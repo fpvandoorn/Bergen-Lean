@@ -185,6 +185,19 @@ namespace cCat
 
     postfix ⁻¹ := cequiv.symm
 
+    protected definition trans [trans] [constructor] {A B C : obj CC} : A ≃* B → B ≃* C → A ≃* C :=
+    begin
+      intros f g,
+      fapply mk,
+      { exact g ∘ f },
+      { apply is_equiv_compose,
+        { apply to_is_equiv },
+        { apply to_is_equiv }},
+      { apply compwd,
+        { apply arr.wd },
+        { apply arr.wd }}
+    end
+
     protected definition to_left_inv (f : A ≃* B) : cequiv.symm f ∘* f = id A :=
     begin
       fapply arr_cong,

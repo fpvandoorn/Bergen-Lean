@@ -5,6 +5,9 @@ import .functor
 open function eq equiv is_equiv cCat cCatwHom
 
 structure closedCat.{u v} extends CC:cCatwHom.{u v} : Type.{(max u v)+1} :=
+  (_compl : Π {X Y} Z (Xd : data X) {Yd : data Y} {Zd : data Z}
+    (f : X → Y) (fg : _good X Y Xd Yd f), _good (arr (obj.mk Y Yd) (obj.mk Z Zd)) (arr (obj.mk X Xd) (obj.mk Z Zd)) (_closed Yd Zd) (_closed Xd Zd) 
+    (λ g , g ∘* arr.mk f fg))
   (_compr : Π X {Y Z : Type} (Xd : data X) {Yd : data Y} {Zd : data Z}
     (f : Y → Z) (fg : _good Y Z Yd Zd f), _good (arr (obj.mk X Xd) (obj.mk Y Yd)) (arr (obj.mk X Xd) (obj.mk Z Zd)) (_closed Xd Yd) (_closed Xd Zd) 
     (λ g , (arr.mk f fg) ∘* g))
@@ -18,6 +21,15 @@ structure closedCat.{u v} extends CC:cCatwHom.{u v} : Type.{(max u v)+1} :=
 
 namespace closedCat
   variables {CC : closedCat}
+
+  definition compl {X Y} (Z : obj CC) (f : X →* Y) : good (@hom CC Y Z) (hom X Z) (λ g , g ∘* f) :=
+  begin
+    induction X,
+    induction Y,
+    induction Z,
+    induction f,
+    apply _compl
+  end
 
   definition compr X {Y Z : obj CC} (f : Y →* Z) : good (@hom CC X Y) (hom X Z) (λ g , f ∘* g) :=
     begin
@@ -78,6 +90,9 @@ namespace closedCat
         apply coh_compr_assoc }}
   end
 end closedCat
+
+structure strong_functor (C : closedCat) extends F:functor C C :=
+  (strong : Π X Y, good (hom X Y) (@hom C (fo X) (fo Y)) fa)
 
 /-- definition pType₁ [constructor] : typeclass := typeclass.mk (λ X : Type, X)
 
